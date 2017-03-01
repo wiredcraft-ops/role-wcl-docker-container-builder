@@ -66,7 +66,7 @@
 - name: Tag the "latest" image using the COMMIT HASH as tag
   docker_image:
     name: "{{ image_name }}"
-    tag: "{{ code_commit_hash.stdout }}"
-    pull: false
+    repository: "{{ image_name }}:{{ code_commit_hash.stdout }}"
+
 
 

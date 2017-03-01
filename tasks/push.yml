@@ -7,7 +7,6 @@
     name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
     repository: "{{ docker_registry }}/{{ image_name }}:{{ code_commit_hash.stdout }}"
     push: true
-    pull: false
 
 - name: Tag the final image with the proper COMMIT HASH
   docker_image:
@@ -15,6 +14,5 @@
     repository: "{{ docker_registry }}/{{ image_name }}:latest"
     push: true
     force: true
-    pull: false
   when: push_as_latest
 
