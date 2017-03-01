@@ -61,12 +61,4 @@
 - name: Build final image (with "latest" tag)
   shell:
     docker run --rm runner-{{ image_name }}:{{ code_commit_hash.stdout }} | \
-      docker build -t {{ image_name }} -
-
-- name: Tag the "latest" image using the COMMIT HASH as tag
-  docker_image:
-    name: "{{ image_name }}"
-    repository: "{{ image_name }}:{{ code_commit_hash.stdout }}"
-
-
-
+      docker build -t {{ image_name }}:{{ code_commit_hash.stdout }} -
