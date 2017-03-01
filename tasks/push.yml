@@ -8,12 +8,15 @@
     repository: "{{ docker_registry }}/{{ image_name }}:{{ code_commit_hash.stdout }}"
     push: true
 
-- name: Tag the final image with the proper COMMIT HASH
-  docker_image:
-    name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
-    repository: "{{ docker_registry }}/{{ image_name }}:latest"
-    push: true
-    # Force trigger a pull ... 
-    # force: true
+- block:
+  - name: Remove the local "latest" tag so we can tag as latest and push
+    docker_image:
+      name: "{{ docker_registry }}/{{ image_name }}:latest"
+
+  - name: Push the final image with the tag "latest"
+    docker_image:
+      name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
+      repository: "{{ docker_registry }}/{{ image_name }}:latest"
+      push: true
   when: push_as_latest
 
