@@ -12,6 +12,7 @@
   - name: Remove the local "latest" tag so we can tag as latest and push
     docker_image:
       name: "{{ docker_registry }}/{{ image_name }}:latest"
+      state: absent
 
   - name: Push the final image with the tag "latest"
     docker_image:
