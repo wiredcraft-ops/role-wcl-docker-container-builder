@@ -67,5 +67,6 @@
   docker_image:
     name: "{{ image_name }}"
     tag: "{{ code_commit_hash.stdout }}"
+    pull: false
 
 
