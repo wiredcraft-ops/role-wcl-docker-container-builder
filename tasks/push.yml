@@ -1,0 +1,18 @@
+---
+#
+# Push to registry
+#
+- name: Push the final image with the proper COMMIT HASH to Docker Registry
+  docker_image:
+    name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
+    repository: "{{ docker_registry }}/{{ image_name }}:{{ code_commit_hash.stdout }}"
+    push: true
+
+- name: Tag the final image with the proper COMMIT HASH
+  docker_image:
+    name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
+    repository: "{{ docker_registry }}/{{ image_name }}:latest"
+    push: true
+    force: true
+  when: push_as_latest
+

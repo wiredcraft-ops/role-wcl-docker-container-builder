@@ -1,0 +1,7 @@
+---
+# Handle authentication to the remote registry
+- name: Log user in the remote registry
+  docker_login:
+    registry: "{{ docker_registry }}"
+    username: "{{ docker_username }}"
+    password: "{{ docker_password }}"

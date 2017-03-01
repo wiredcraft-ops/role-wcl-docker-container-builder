@@ -1,0 +1,16 @@
+---
+login: true
+artifact: true
+push: true
+push_as_latest: true
+
+# Define the container type
+container_type: 'strong-pm'
+from_image: 'node:6.9'
+
+container_buildargs: {}
+  # REGISTRY: https://registry.npm.taobao.org
+
+# Optional - allows to push to a remote custom registry
+docker_registry: ''
+

@@ -1,0 +1,13 @@
+---
+# This will ensure a user can login on the registry
+- include: login.yml
+  when: login and push
+
+# Build an intermediary container to generate the artifact
+- include: artifact.yml
+  when: artifact
+
+# Push to a repository
+- include: push.yml
+  when: push
+

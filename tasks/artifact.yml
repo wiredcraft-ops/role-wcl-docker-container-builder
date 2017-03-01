@@ -1,0 +1,71 @@
+---
+# Prepare version from from_image
+- name: Set builder_version based on the source from_image
+  set_fact:
+    builder_version: "{{ from_image.split(':')[1] | default('latest') }}"
+
+# TODO: replace with tempfile module once maintstream
+- name: Prepare temp folder
+  command: mktemp -d
+  register: temp_folder
+
+# Copy the templates, specific to a type of container
+- name: Copy Dockerfile context over the temp folder
+  template:
+    src: "{{ container_type }}/{{ item }}.j2"
+    dest: "{{ temp_folder.stdout }}/{{ item }}"
+  with_items:
+    - Dockerfile
+    - Docker-runner.tpl
+    - setup-runner.sh
+
+# Build the builder
+- name: Prepare artifact builder container image (using ONBUILD)
+  docker_image:
+    name: "builder-{{ container_type }}:{{ builder_version }}"
+    state: present
+    pull: true
+    path: "{{ temp_folder.stdout }}"
+
+# Get the current commit hash from the code base
+# TODO - move somewhere else ?
+- name: Get the commit hash
+  command:
+    chdir={{ code_path }}
+    git log --format="%h" -n 1
+  register: code_commit_hash
+
+- name: Copy code base to the app folder
+  command:
+    cp -a {{ code_path }} {{ temp_folder.stdout }}/app
+
+- name: Prepare Dockerfile for the runner
+  copy: 
+    dest: "{{ temp_folder.stdout }}/app/Dockerfile"
+    content: FROM builder-{{ container_type }}:{{ builder_version }}
+    force: true
+
+- name: Prepare the artifact image
+  docker_image:
+    name: "runner-{{ image_name }}:{{ code_commit_hash.stdout }}"
+    state: present
+    pull: true
+    path: "{{ temp_folder.stdout }}/app"
+    buildargs: "{{ container_buildargs }}"
+
+- name: Cleanup the temp folder
+  file:
+    name: "{{ temp_folder.stdout }}"
+    state: absent
+
+- name: Build final image (with "latest" tag)
+  shell:
+    docker run --rm runner-{{ image_name }}:{{ code_commit_hash.stdout }} | \
+      docker build -t {{ image_name }} -
+
+- name: Tag the "latest" image using the COMMIT HASH as tag
+  docker_image:
+    name: "{{ image_name }}"
+    tag: "{{ code_commit_hash.stdout }}"
+
+
