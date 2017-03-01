@@ -13,6 +13,7 @@
     name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
     repository: "{{ docker_registry }}/{{ image_name }}:latest"
     push: true
-    force: true
+    # Force trigger a pull ... 
+    # force: true
   when: push_as_latest
 

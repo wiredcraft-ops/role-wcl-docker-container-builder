@@ -58,6 +58,11 @@
     name: "{{ temp_folder.stdout }}"
     state: absent
 
+#
+# TODO: Split into 2 tasks:
+#  - write artifact in a file
+#  - run build using the file as docker context
+#
 - name: Build final image (with "latest" tag)
   shell:
     docker run --rm runner-{{ image_name }}:{{ code_commit_hash.stdout }} | \
