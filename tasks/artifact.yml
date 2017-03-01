@@ -16,7 +16,7 @@
     dest: "{{ temp_folder.stdout }}/{{ item }}"
   with_items:
     - Dockerfile
-    - Docker-runner.tpl
+    - Dockerfile-runner.tpl
     - setup-runner.sh
 
 # Build the builder
