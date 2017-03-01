@@ -49,6 +49,7 @@
   docker_image:
     name: "runner-{{ image_name }}:{{ code_commit_hash.stdout }}"
     state: present
+    pull: false
     path: "{{ temp_folder.stdout }}/app"
     buildargs: "{{ container_buildargs }}"
 
