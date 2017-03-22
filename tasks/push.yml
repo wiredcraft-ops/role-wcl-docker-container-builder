@@ -7,7 +7,7 @@
     name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
     repository: "{{ docker_registry }}/{{ image_name }}:{{ code_commit_hash.stdout }}"
     push: true
-  when: !custom_tag
+  when: not custom_tag
 
 - block:
   - name: Remove the remote {{ custom_tag }} tag incase we already have it
