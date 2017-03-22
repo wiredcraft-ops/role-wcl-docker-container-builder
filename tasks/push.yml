@@ -7,9 +7,23 @@
     name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
     repository: "{{ docker_registry }}/{{ image_name }}:{{ code_commit_hash.stdout }}"
     push: true
+  when: image_tag == ''
 
 - block:
-  - name: Remove the local "latest" tag so we can tag as latest and push
+  - name: Remove the remote {{ image_tag }} tag incase we already have the tag
+    docker_image:
+      name: "{{ docker_registry }}/{{ image_name }}:{{ image_tag }}"
+      state: absent
+
+  - name: Push the final image with the tag {{ image_tag }}
+    docker_image:
+      name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
+      repository: "{{ docker_registry }}/{{ image_name }}:{{ image_tag }}"
+      push: true
+  when: image_tag != ''
+
+- block:
+  - name: Remove the remote "latest" tag so we can tag as latest and push
     docker_image:
       name: "{{ docker_registry }}/{{ image_name }}:latest"
       state: absent

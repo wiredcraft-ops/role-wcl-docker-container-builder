@@ -8,6 +8,8 @@ push_as_latest: true
 container_type: 'strong-pm'
 from_image: 'node:6.9'
 
+image_tag: ''
+
 container_buildargs: {}
   # REGISTRY: https://registry.npm.taobao.org
 
