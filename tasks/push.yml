@@ -23,15 +23,15 @@
   when: custom_tag is defined and custom_tag
 
 - block:
-  - name: Remove the remote "latest" tag so we can tag as latest and push
+  - name: Remove the remote {{ latest_tag_prefix }}latest tag so we can tag as {{ latest_tag_prefix }}latest and push
     docker_image:
-      name: "{{ docker_registry }}/{{ image_name }}:latest"
+      name: "{{ docker_registry }}/{{ image_name }}:{{ latest_tag_prefix }}latest"
       state: absent
 
-  - name: Push the final image with the tag "latest"
+  - name: Push the final image with the tag {{ latest_tag_prefix }}latest
     docker_image:
       name: "{{ image_name }}:{{ code_commit_hash.stdout }}"
-      repository: "{{ docker_registry }}/{{ image_name }}:latest"
+      repository: "{{ docker_registry }}/{{ image_name }}:{{ latest_tag_prefix }}latest"
       push: true
   when: push_as_latest
 
